@@ -57,7 +57,11 @@ namespace ResultsChecker
                 string licensePlateNumber = line.TrimEnd('\r', '\n');
                 if (line != "")
                 {
-                    licensePlatesNumbers.Add(licensePlateNumber);
+                    licensePlatesNumbers.Add(licensePlateNumber.ToUpper());
+                }
+                else
+                {
+                    licensePlatesNumbers.Add("XXXXXXX");
                 }
             }
 
@@ -70,19 +74,18 @@ namespace ResultsChecker
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("$Forename$, $Surname$, $finalScore$, partial scores:, ");
+                sb.Append("$Forename$, $Surname$, $finalScore$, $Other:$, partial scores:, ");
                 for (int i = 0; i < numberOfScores; i++)
                 {
                     sb.Append("$" + i + "$, ");
                 }
-                sb.Append("$Other:$");
                 sb.Append("\r\n");
 
                 foreach (var studentScore in studentsScores)
                 {
 
                     sb.Append(studentScore.forename).Append(", ").Append(studentScore.surname).Append(", ");
-                    sb.Append(studentScore.score).Append(", partial scores:, ");
+                    sb.Append(studentScore.score).Append(", ").Append(studentScore.others).Append(", partial scores:, ");
                     foreach (var partialScore in studentScore.scoreForEachLicensePlate)
                     {
                         sb.Append(partialScore).Append(", ");
@@ -131,23 +134,31 @@ namespace ResultsChecker
             this.score = 0;
             this.others = "";
             this.scoreForEachLicensePlate.Clear();
-            for (int i = 0; i < this.licensePlateNumbers.Count; i++)
+            for (int i = 0; i < groundTruthLicensePlateNumbers.Count; i++)
             {
                 this.scoreForEachLicensePlate.Add(0);
             }
 
+            int numberOfCompares = 0;
 
             if (this.licensePlateNumbers.Count < groundTruthLicensePlateNumbers.Count)
             {
-                this.others += "Number of results is lower than ground truth!";
+                this.others += "Number of results is lower (" + this.licensePlateNumbers.Count + ") than ground truth!";
+                numberOfCompares = this.licensePlateNumbers.Count;
             }
             else if (this.licensePlateNumbers.Count > groundTruthLicensePlateNumbers.Count)
             {
-                this.others += "Number of results is higher than ground truth!";
+                this.others += "Number of results is higher (" + this.licensePlateNumbers.Count + ") than ground truth!";
+                numberOfCompares = groundTruthLicensePlateNumbers.Count;
             }
             else
             {
-                for (int i = 0; i < this.licensePlateNumbers.Count; i++)
+                numberOfCompares = groundTruthLicensePlateNumbers.Count;
+            }
+            
+
+            {
+                for (int i = 0; i < numberOfCompares; i++)
 			    {
                     string current = this.licensePlateNumbers[i];
                     string gt = groundTruthLicensePlateNumbers[i];
