@@ -35,6 +35,15 @@ namespace ProgramsExecutor
 
             return timeForWholeProjectInMSeconds;
         }
+
+        static int CalculateTimeForWholeProject_2015version_secondEdition(int _numberOfRoadSignImages)
+        {
+            const int gracePeriod = 30;
+            const int timeInSecondsForEachRoadSignImage = 2;
+            int timeForWholeProjectInMSeconds = ((_numberOfRoadSignImages * timeInSecondsForEachRoadSignImage) + gracePeriod) * 1000;
+
+            return timeForWholeProjectInMSeconds;
+        }
         #endregion
 
         static void Main(string[] args)
@@ -46,7 +55,8 @@ namespace ProgramsExecutor
 
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2013version(10, 30, 3);
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2014version(126);
-            int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version(57);
+            //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version(57);
+            int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version_secondEdition(24);
 
             Console.WriteLine("Time provided for each program (in seconds): " + (timeForWholeProjectInMSeconds / 1000).ToString() + System.Environment.NewLine);
 
