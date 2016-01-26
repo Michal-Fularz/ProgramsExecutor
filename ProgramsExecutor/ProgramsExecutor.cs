@@ -44,11 +44,20 @@ namespace ProgramsExecutor
 
             return timeForWholeProjectInMSeconds;
         }
+
+        static int CalculateTimeForWholeProject_2016version(int _numberOfScenes, int _numberOfSecondsPerScene)
+        {
+            const int gracePeriod = 30;
+            int timeForWholeProjectInMSeconds = (_numberOfScenes * _numberOfSecondsPerScene + gracePeriod) * 1000;
+
+            return timeForWholeProjectInMSeconds;
+        }
+
         #endregion
 
         static void Main(string[] args)
         {
-            Console.WriteLine("SiSW 2014 students program executor!\r\n Author: Michal Fularz" + System.Environment.NewLine);
+            Console.WriteLine("SiSW 2016 students program executor!\r\n Author: Michal Fularz" + System.Environment.NewLine);
 
             // get *.exe files from directory
             string[] filesInDirectory = System.IO.Directory.GetFiles(System.IO.Directory.GetCurrentDirectory() + @"\", "*.exe");
@@ -56,7 +65,8 @@ namespace ProgramsExecutor
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2013version(10, 30, 3);
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2014version(126);
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version(57);
-            int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version_secondEdition(24);
+            //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version_secondEdition(24);
+            int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2016version(5, 60);
 
             Console.WriteLine("Time provided for each program (in seconds): " + (timeForWholeProjectInMSeconds / 1000).ToString() + System.Environment.NewLine);
 
