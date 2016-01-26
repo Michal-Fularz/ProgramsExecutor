@@ -43,6 +43,9 @@
   <ItemGroup>
     <Compile Include="ResultsChecker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StudentScore.cs" />
+    <Compile Include="StudentScore2015_SE.cs" />
+    <Compile Include="StudentScoreJellyBean.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
