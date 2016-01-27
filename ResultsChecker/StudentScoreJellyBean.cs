@@ -121,30 +121,13 @@ namespace ResultsChecker
             }
         }
 
-        public override StringBuilder GetTitleRow()
-        {
-            int numberOfScores = this.scoreForEachScene.Count;
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("$Forename$, $Surname$, $finalScore$, $Other:$, partial scores:, ");
-            for (int i = 0; i < numberOfScores; i++)
-            {
-                sb.Append("$" + i + "$, ");
-            }
-            sb.Append("\r\n");
-
-            return sb;
-        }
-
         public override StringBuilder GetResults()
         {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append(this.forename).Append(", ").Append(this.surname).Append(", ");
-            sb.AppendFormat("{0:F2}", this.score).Append(", ").Append(this.others).Append(", partial scores:, ");
+            StringBuilder sb = this.GetResultsGeneral();
+            sb.Append(", partial scores:, ");
             foreach (var partialScore in this.scoreForEachScene)
             {
-                sb.AppendFormat("{0:F2}", partialScore).Append(", ");
+                sb.Append(partialScore).Append(", ");
             }
             sb.Append("\r\n");
 

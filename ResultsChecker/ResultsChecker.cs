@@ -12,26 +12,34 @@ namespace ResultsChecker
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("SiSW 2016 students reults checker!\r\n Author: Michal Fularz" + System.Environment.NewLine);
+            Console.WriteLine("More info and code can be found on github: https://github.com/Michal-Fularz/ProgramsExecutor" + System.Environment.NewLine);
+
+            Console.WriteLine("For proper operation this program requires file wyniki.txt with ground truth data and folder wyniki with files Nazwisko_Imie.txt with data to be compared." + System.Environment.NewLine);
+
             //Main2015();
 
-            //Main2015SE();
+            Main_general();
 
-            Main2016_JellyBeans();
+            Console.WriteLine("If the program does not throw any exception it means provided files were correctly formatted." + System.Environment.NewLine);
+
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
 
-        #region 2016 Jelly Beans
+        #region general
 
-        static void Main2016_JellyBeans()
+        static void Main_general()
         {
             // prepare ground truth data
             // use appropraite specialized type eg. Student2015Score_SE
             StudentScore groundTruth = new StudentScoreJellyBean("ground", "truth");
-            groundTruth.LoadResultsFromFile(@"gt\gt.txt");
+            groundTruth.LoadResultsFromFile(@"wyniki.txt");
 
             // load students from file
             List<StudentScore> studentsScores = new List<StudentScore>();
 
-            string pathToFiles = System.IO.Directory.GetCurrentDirectory() + @"\results\";
+            string pathToFiles = System.IO.Directory.GetCurrentDirectory() + @"\wyniki\";
             string[] filesInDirectory = System.IO.Directory.GetFiles(pathToFiles, "*.txt");
 
             foreach (var file in filesInDirectory)
@@ -47,7 +55,6 @@ namespace ResultsChecker
                 studentsScores.Add(newStudent);
             }
 
-            // for each student compare its result with ground truth
             foreach (var studentScore in studentsScores)
             {
                 studentScore.CompareWithGroundTruth(groundTruth);
@@ -56,8 +63,8 @@ namespace ResultsChecker
             // save results to a file
             using (TextWriter writer = File.CreateText(System.IO.Directory.GetCurrentDirectory() + @"\summary.txt"))
             {
-                StringBuilder sb = studentsScores[0].GetTitleRow();
-                //StringBuilder sb = Student2015Score_SE.PrepareTitleRow(groundTruth.GetTheNumberOfScores());
+                // use appropraite specialized type eg. Student2015Score_SE
+                StringBuilder sb = StudentScoreJellyBean.GetTitleRow();
 
                 foreach (var studentScore in studentsScores)
                 {
@@ -69,60 +76,12 @@ namespace ResultsChecker
 
         #endregion
 
-        #region 2015 Second Edition
-
-        static void Main2015SE()
-        {
-            // prepare ground truth data
-            Student2015Score_SE groundTruth = new Student2015Score_SE("ground", "truth");
-            groundTruth.LoadResultsFromFile(@"gt\gt.txt");
-
-            // load students from file
-            List<Student2015Score_SE> studentsScores = new List<Student2015Score_SE>();
-            
-            string pathToFiles = System.IO.Directory.GetCurrentDirectory() + @"\wyniki\";
-            string[] filesInDirectory = System.IO.Directory.GetFiles(pathToFiles, "*.txt");
-
-            foreach (var file in filesInDirectory)
-            {
-                string filename = file.Replace(pathToFiles, string.Empty);
-
-                string[] partsOfFilename = System.Text.RegularExpressions.Regex.Split(filename.TrimEnd('.', 't', 'x', 't'), "_");
-
-                Student2015Score_SE newStudent = new Student2015Score_SE(partsOfFilename[0], partsOfFilename[1]);
-                newStudent.LoadResultsFromFile(file);
-
-                studentsScores.Add(newStudent);
-            }
-
-            // for each student compare its result with ground truth
-            foreach (var studentScore in studentsScores)
-            {
-                studentScore.CompareWithGroundTruth(groundTruth);
-            }
-
-            // save results to a file
-            using (TextWriter writer = File.CreateText(System.IO.Directory.GetCurrentDirectory() + @"\podsumowanie.txt"))
-            {
-                StringBuilder sb = studentsScores[0].GetTitleRow();
-                //Student2015Score_SE.PrepareTitleRow(groundTruth.GetTheNumberOfScores());
-
-                foreach (var studentScore in studentsScores)
-                {
-                    sb.Append(studentScore.GetResults());
-                }
-                writer.WriteLine(sb);
-            }
-        }
-
-        #endregion
-
-        #region 2015
+        #region 2015 - old code!!!
 
         static private void Main2015()
         {
-            List<Student2015Score> studentsScores = new List<Student2015Score>();
-            List<Student2015Score> groundTruth = new List<Student2015Score>();
+            List<StudentScore2015> studentsScores = new List<StudentScore2015>();
+            List<StudentScore2015> groundTruth = new List<StudentScore2015>();
 
             LoadDataFromFilesToStudentsScores(System.IO.Directory.GetCurrentDirectory() + @"\wyniki\", studentsScores);
             LoadDataFromFilesToStudentsScores(System.IO.Directory.GetCurrentDirectory() + @"\gt\", groundTruth);
@@ -137,7 +96,7 @@ namespace ResultsChecker
             Console.WriteLine(studentsScores[0].score.ToString());
         }
 
-        static private void LoadDataFromFilesToStudentsScores(string pathToFiles, List<Student2015Score> studentsScores)
+        static private void LoadDataFromFilesToStudentsScores(string pathToFiles, List<StudentScore2015> studentsScores)
         {
             string[] filesInDirectory = System.IO.Directory.GetFiles(pathToFiles, "*.txt");
 
@@ -147,7 +106,7 @@ namespace ResultsChecker
 
                 string[] partsOfFilename = System.Text.RegularExpressions.Regex.Split(filename.TrimEnd('.', 't', 'x', 't'), "_");
 
-                Student2015Score newStudent = new Student2015Score(partsOfFilename[0], partsOfFilename[1]);
+                StudentScore2015 newStudent = new StudentScore2015(partsOfFilename[0], partsOfFilename[1]);
                 newStudent.licensePlateNumbers = LoadLicensePlateNumbersFromFile(file);
 
                 studentsScores.Add(newStudent);
@@ -177,7 +136,7 @@ namespace ResultsChecker
             return licensePlatesNumbers;
         }
 
-        static private void SaveResults(string fileNameWithPath, List<Student2015Score> studentsScores, int numberOfScores)
+        static private void SaveResults(string fileNameWithPath, List<StudentScore2015> studentsScores, int numberOfScores)
         {
             using (TextWriter writer = File.CreateText(fileNameWithPath))
             {
@@ -208,100 +167,5 @@ namespace ResultsChecker
         }
 
         #endregion
-    }
-
-
-    class Student2015Score
-    {
-        public string forename;
-        public string surname;
-        public int score;
-        public List<int> scoreForEachLicensePlate;
-        public List<string> licensePlateNumbers;
-        public string others;
-        
-        public Student2015Score()
-        {
-            this.forename = "John";
-            this.surname = "Doe";
-            this.score = 0;
-            this.scoreForEachLicensePlate = new List<int>();
-            this.licensePlateNumbers = new List<string>();
-            this.others = "";
-        }
-
-        public Student2015Score(string _firstName, string _lastName)
-        {
-            this.forename = _firstName;
-            this.surname = _lastName;
-            this.score = 0;
-            this.scoreForEachLicensePlate = new List<int>();
-            this.licensePlateNumbers = new List<string>();
-            this.others = "";
-        }
-
-        public void CompareWithGroundTruth(List<string> groundTruthData)
-        {
-            List<string> groundTruthLicensePlateNumbers = groundTruthData;
-            // prepare all the members
-            this.score = 0;
-            this.others = "";
-            this.scoreForEachLicensePlate.Clear();
-            for (int i = 0; i < groundTruthLicensePlateNumbers.Count; i++)
-            {
-                this.scoreForEachLicensePlate.Add(0);
-            }
-
-            int numberOfCompares = 0;
-
-            if (this.licensePlateNumbers.Count < groundTruthLicensePlateNumbers.Count)
-            {
-                this.others += "Number of results is lower (" + this.licensePlateNumbers.Count + ") than ground truth!";
-                numberOfCompares = this.licensePlateNumbers.Count;
-            }
-            else if (this.licensePlateNumbers.Count > groundTruthLicensePlateNumbers.Count)
-            {
-                this.others += "Number of results is higher (" + this.licensePlateNumbers.Count + ") than ground truth!";
-                numberOfCompares = groundTruthLicensePlateNumbers.Count;
-            }
-            else
-            {
-                numberOfCompares = groundTruthLicensePlateNumbers.Count;
-            }
-            
-
-            {
-                for (int i = 0; i < numberOfCompares; i++)
-			    {
-                    string current = this.licensePlateNumbers[i];
-                    string gt = groundTruthLicensePlateNumbers[i];
-
-			        int sizeOfSmaller = 0;
-                    if (current.Length < gt.Length)
-                    {
-                        sizeOfSmaller = current.Length;
-                    }
-                    else
-                    {
-                        sizeOfSmaller = gt.Length;
-                    }
-
-                    for (int j = 0; j < sizeOfSmaller; j++)
-                    {
-                        if(current[j] == gt[j])
-                        {
-                            this.scoreForEachLicensePlate[i]++;
-                        }
-                    }
-                    // bonus points for whole license plate
-                    if (this.scoreForEachLicensePlate[i] == 7)
-                    {
-                        this.scoreForEachLicensePlate[i] += 3;
-                    }
-
-                    score += this.scoreForEachLicensePlate[i];
-			    }
-            }
-        }
     }
 }

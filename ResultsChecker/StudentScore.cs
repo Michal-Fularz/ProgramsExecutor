@@ -30,7 +30,25 @@ namespace ResultsChecker
 
         public abstract void CompareWithGroundTruth(StudentScore groundTruthData);
 
-        public abstract StringBuilder GetTitleRow();
+        public static StringBuilder GetTitleRow()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("Forename, Surname, score, other:, additional info (partial scores)");
+            sb.Append("\r\n");
+
+            return sb;
+        }
+
+        protected StringBuilder GetResultsGeneral()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(this.forename).Append(", ").Append(this.surname).Append(", ");
+            sb.Append(this.score).Append(", ").Append(this.others);
+
+            return sb;
+        }
 
         public abstract StringBuilder GetResults();
     }

@@ -58,6 +58,7 @@ namespace ProgramsExecutor
         static void Main(string[] args)
         {
             Console.WriteLine("SiSW 2016 students program executor!\r\n Author: Michal Fularz" + System.Environment.NewLine);
+            Console.WriteLine("More info and code can be found on github: https://github.com/Michal-Fularz/ProgramsExecutor" + System.Environment.NewLine);
 
             // get *.exe files from directory
             string[] filesInDirectory = System.IO.Directory.GetFiles(System.IO.Directory.GetCurrentDirectory() + @"\", "*.exe");

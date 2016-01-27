@@ -113,11 +113,6 @@ namespace ResultsChecker
             this.dataForEachRoadSignImage = new List<NumberOfRoadSignsOnImage>();
         }
 
-        public int GetTheNumberOfScores()
-        {
-            return this.dataForEachRoadSignImage.Count;
-        }
-
         public override void LoadResultsFromFile(string filenameWithPath)
         {
             this.dataForEachRoadSignImage.Clear();
@@ -171,27 +166,10 @@ namespace ResultsChecker
             }
         }
 
-        public override StringBuilder GetTitleRow()
-        {
-            int numberOfScores = this.scoreForEachRoadSignImage.Count;
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("$Forename$, $Surname$, $finalScore$, $Other:$, partial scores:, ");
-            for (int i = 0; i < numberOfScores; i++)
-            {
-                sb.Append("$" + i + "$, ");
-            }
-            sb.Append("\r\n");
-
-            return sb;
-        }
-
         public override StringBuilder GetResults()
         {
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append(this.forename).Append(", ").Append(this.surname).Append(", ");
-            sb.Append(this.score).Append(", ").Append(this.others).Append(", partial scores:, ");
+            StringBuilder sb = this.GetResultsGeneral();
+            sb.Append(", partial scores:, ");
             foreach (var partialScore in this.scoreForEachRoadSignImage)
             {
                 sb.Append(partialScore).Append(", ");
