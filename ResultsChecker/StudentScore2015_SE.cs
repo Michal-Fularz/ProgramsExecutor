@@ -141,29 +141,39 @@ namespace ResultsChecker
 
         public override void CompareWithGroundTruth(StudentScore groundTruthData)
         {
-            List<NumberOfRoadSignsOnImage> groundTruthRoadSignNumbers = groundTruthData.dataForEachRoadSignImage;
-            // prepare all the members
-            this.score = 0;
-            this.others = "";
-            this.scoreForEachRoadSignImage.Clear();
-            for (int i = 0; i < groundTruthRoadSignNumbers.Count; i++)
+            if (groundTruthData is Student2015Score_SE)
             {
-                this.scoreForEachRoadSignImage.Add(0);
-            }          
+                Student2015Score_SE groundTruthData_downcasted = (Student2015Score_SE)groundTruthData;
 
-            for (int i = 0; i < this.dataForEachRoadSignImage.Count; i++)
-			{
-                NumberOfRoadSignsOnImage current = this.dataForEachRoadSignImage[i];
-                NumberOfRoadSignsOnImage gt = groundTruthRoadSignNumbers[i];
+                List<NumberOfRoadSignsOnImage> groundTruthRoadSignNumbers = groundTruthData_downcasted.dataForEachRoadSignImage;
+                // prepare all the members
+                this.score = 0;
+                this.others = "";
+                this.scoreForEachRoadSignImage.Clear();
+                for (int i = 0; i < groundTruthRoadSignNumbers.Count; i++)
+                {
+                    this.scoreForEachRoadSignImage.Add(0);
+                }
 
-                this.scoreForEachRoadSignImage[i] = current.CountScore(gt);
+                for (int i = 0; i < this.dataForEachRoadSignImage.Count; i++)
+                {
+                    NumberOfRoadSignsOnImage current = this.dataForEachRoadSignImage[i];
+                    NumberOfRoadSignsOnImage gt = groundTruthRoadSignNumbers[i];
 
-                this.score += this.scoreForEachRoadSignImage[i];
-			}
+                    this.scoreForEachRoadSignImage[i] = current.CountScore(gt);
+
+                    this.score += this.scoreForEachRoadSignImage[i];
+                }
+            }
+            else
+            {
+                throw new Exception("Wrong class passed!");
+            }
         }
 
-        public static StringBuilder PrepareTitleRow(int numberOfScores)
+        public override StringBuilder GetTitleRow()
         {
+            int numberOfScores = this.scoreForEachRoadSignImage.Count;
             StringBuilder sb = new StringBuilder();
 
             sb.Append("$Forename$, $Surname$, $finalScore$, $Other:$, partial scores:, ");
@@ -176,7 +186,7 @@ namespace ResultsChecker
             return sb;
         }
 
-        public StringBuilder GetResultForSaving()
+        public override StringBuilder GetResults()
         {
             StringBuilder sb = new StringBuilder();
 

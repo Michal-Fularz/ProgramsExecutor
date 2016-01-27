@@ -24,13 +24,14 @@ namespace ResultsChecker
         static void Main2016_JellyBeans()
         {
             // prepare ground truth data
-            Student2015Score_SE groundTruth = new Student2015Score_SE("ground", "truth");
+            // use appropraite specialized type eg. Student2015Score_SE
+            StudentScore groundTruth = new StudentScoreJellyBean("ground", "truth");
             groundTruth.LoadResultsFromFile(@"gt\gt.txt");
 
             // load students from file
-            List<Student2015Score_SE> studentsScores = new List<Student2015Score_SE>();
+            List<StudentScore> studentsScores = new List<StudentScore>();
 
-            string pathToFiles = System.IO.Directory.GetCurrentDirectory() + @"\wyniki\";
+            string pathToFiles = System.IO.Directory.GetCurrentDirectory() + @"\results\";
             string[] filesInDirectory = System.IO.Directory.GetFiles(pathToFiles, "*.txt");
 
             foreach (var file in filesInDirectory)
@@ -39,7 +40,8 @@ namespace ResultsChecker
 
                 string[] partsOfFilename = System.Text.RegularExpressions.Regex.Split(filename.TrimEnd('.', 't', 'x', 't'), "_");
 
-                Student2015Score_SE newStudent = new Student2015Score_SE(partsOfFilename[0], partsOfFilename[1]);
+                // use appropraite specialized type eg. Student2015Score_SE
+                StudentScore newStudent = new StudentScoreJellyBean(partsOfFilename[0], partsOfFilename[1]);
                 newStudent.LoadResultsFromFile(file);
 
                 studentsScores.Add(newStudent);
@@ -52,13 +54,14 @@ namespace ResultsChecker
             }
 
             // save results to a file
-            using (TextWriter writer = File.CreateText(System.IO.Directory.GetCurrentDirectory() + @"\podsumowanie.txt"))
+            using (TextWriter writer = File.CreateText(System.IO.Directory.GetCurrentDirectory() + @"\summary.txt"))
             {
-                StringBuilder sb = Student2015Score_SE.PrepareTitleRow(groundTruth.GetTheNumberOfScores());
+                StringBuilder sb = studentsScores[0].GetTitleRow();
+                //StringBuilder sb = Student2015Score_SE.PrepareTitleRow(groundTruth.GetTheNumberOfScores());
 
                 foreach (var studentScore in studentsScores)
                 {
-                    sb.Append(studentScore.GetResultForSaving());
+                    sb.Append(studentScore.GetResults());
                 }
                 writer.WriteLine(sb);
             }
@@ -101,11 +104,12 @@ namespace ResultsChecker
             // save results to a file
             using (TextWriter writer = File.CreateText(System.IO.Directory.GetCurrentDirectory() + @"\podsumowanie.txt"))
             {
-                StringBuilder sb = Student2015Score_SE.PrepareTitleRow(groundTruth.GetTheNumberOfScores());
+                StringBuilder sb = studentsScores[0].GetTitleRow();
+                //Student2015Score_SE.PrepareTitleRow(groundTruth.GetTheNumberOfScores());
 
                 foreach (var studentScore in studentsScores)
                 {
-                    sb.Append(studentScore.GetResultForSaving());
+                    sb.Append(studentScore.GetResults());
                 }
                 writer.WriteLine(sb);
             }

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ResultsChecker
 {
-    class StudentScore
+    abstract class StudentScore
     {
         public string forename;
         public string surname;
-        public int score;
+        public double score;
         public string others;
 
         public StudentScore()
@@ -26,12 +26,12 @@ namespace ResultsChecker
             this.others = "";
         }
 
-        public virtual void LoadResultsFromFile(string filenameWithPath)
-        {
-        }
+        public abstract void LoadResultsFromFile(string filenameWithPath);
 
-        public virtual void CompareWithGroundTruth(StudentScore groundTruthData)
-        {
-        }
+        public abstract void CompareWithGroundTruth(StudentScore groundTruthData);
+
+        public abstract StringBuilder GetTitleRow();
+
+        public abstract StringBuilder GetResults();
     }
 }

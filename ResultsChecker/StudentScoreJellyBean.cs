@@ -23,9 +23,9 @@ namespace ResultsChecker
 
             public Scene(string textToParse)
             {
-                textToParse = textToParse.Replace("  ", " ");
+                textToParse = textToParse.Replace(" ", "");
 
-                string[] numbers = textToParse.Split(' ');
+                string[] numbers = textToParse.Split(',');
 
                 if (numbers.Length > Scene.numberOfColors)
                 {
@@ -37,22 +37,42 @@ namespace ResultsChecker
                     this.numberOfJellyBeans[i] = Int32.Parse(numbers[i]);
                 }
             }
+
+            public double CountScore(Scene gt)
+            {
+                int numberOfDifferences = 0;
+                int numberOfJellyBeans = 0;
+                for(int i=0; i<Scene.numberOfColors; i++)
+                {
+                    numberOfDifferences += Math.Abs(this.numberOfJellyBeans[i] - gt.numberOfJellyBeans[i]);
+                    numberOfJellyBeans += gt.numberOfJellyBeans[i];
+                }
+
+                double score = (double)numberOfDifferences / (double)numberOfJellyBeans;
+
+                return score;
+            }
         }
 
-        public string forename;
-        public string surname;
-        public int score;
-        public List<Scene> scenes;
-        public List<int> numberOfErrorsOnEachScene;
-        public List<double> percentageOfErrorsOnEachScene;
-        public string others;
+        private List<Scene> scenes;
+        private List<double> scoreForEachScene;
 
         public StudentScoreJellyBean(string _firstName, string _lastName)
             : base(_firstName, _lastName)
         {
             this.scenes = new List<Scene>();
-            this.numberOfErrorsOnEachScene = new List<int>();
-            this.percentageOfErrorsOnEachScene = new List<double>();
+            this.scoreForEachScene = new List<double>();
+        }
+
+        private void ClearAndPrepareAllFields(int numberOfScenes)
+        {
+            this.score = 0;
+            this.others = "";
+            this.scoreForEachScene.Clear();
+            for (int i = 0; i < numberOfScenes; i++)
+            {
+                this.scoreForEachScene.Add(0);
+            }
         }
 
         public override void LoadResultsFromFile(string filenameWithPath)
@@ -76,9 +96,59 @@ namespace ResultsChecker
             }
         }
 
-        public void CompareWithGroundTruth(StudentScore groundTruthData)
+        public override void CompareWithGroundTruth(StudentScore groundTruthData)
         {
+            if (groundTruthData is StudentScoreJellyBean)
+            {
+                // downcasting to access the ground truth scenes
+                List<Scene> groundTruthScenes = ((StudentScoreJellyBean)groundTruthData).scenes;
 
+                this.ClearAndPrepareAllFields(groundTruthScenes.Count);
+
+                for (int i = 0; i < this.scenes.Count; i++)
+                {
+                    Scene current = this.scenes[i];
+                    Scene gt = groundTruthScenes[i];
+
+                    this.scoreForEachScene[i] = current.CountScore(gt);
+                }
+
+                this.score = this.scoreForEachScene.Average();
+            }
+            else
+            {
+                throw new Exception("Wrong class passed!");
+            }
+        }
+
+        public override StringBuilder GetTitleRow()
+        {
+            int numberOfScores = this.scoreForEachScene.Count;
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("$Forename$, $Surname$, $finalScore$, $Other:$, partial scores:, ");
+            for (int i = 0; i < numberOfScores; i++)
+            {
+                sb.Append("$" + i + "$, ");
+            }
+            sb.Append("\r\n");
+
+            return sb;
+        }
+
+        public override StringBuilder GetResults()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(this.forename).Append(", ").Append(this.surname).Append(", ");
+            sb.AppendFormat("{0:F2}", this.score).Append(", ").Append(this.others).Append(", partial scores:, ");
+            foreach (var partialScore in this.scoreForEachScene)
+            {
+                sb.AppendFormat("{0:F2}", partialScore).Append(", ");
+            }
+            sb.Append("\r\n");
+
+            return sb;
         }
     }
 }
