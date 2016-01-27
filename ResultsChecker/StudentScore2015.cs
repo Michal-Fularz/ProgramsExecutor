@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace ResultsChecker
 {
-    class StudentScore2015
+    class StudentScore2015 : StudentScore
     {
-        public string forename;
-        public string surname;
-        public int score;
-        public List<int> scoreForEachLicensePlate;
-        public List<string> licensePlateNumbers;
-        public string others;
+        private List<string> licensePlateNumbers;
+        private List<double> scoreForEachLicensePlate;
         
         public StudentScore2015()
         {
@@ -35,18 +31,26 @@ namespace ResultsChecker
             this.others = "";
         }
 
-        public void CompareWithGroundTruth(List<string> groundTruthData)
+        public StudentScore2015(string _firstName, string _lastName)
+            : base(_firstName, _lastName)
         {
-            List<string> groundTruthLicensePlateNumbers = groundTruthData;
-            // prepare all the members
+            this.licensePlateNumbers = new List<string>();
+            this.scoreForEachLicensePlate = new List<double>();
+        }
+
+        private void ClearAndPrepareAllFields(int numberOfLicensePlates)
+        {
             this.score = 0;
             this.others = "";
             this.scoreForEachLicensePlate.Clear();
-            for (int i = 0; i < groundTruthLicensePlateNumbers.Count; i++)
+            for (int i = 0; i < numberOfLicensePlates; i++)
             {
                 this.scoreForEachLicensePlate.Add(0);
             }
+        }
 
+        private int FindNumberOfCompares(List<string> groundTruthLicensePlateNumbers)
+        {
             int numberOfCompares = 0;
 
             if (this.licensePlateNumbers.Count < groundTruthLicensePlateNumbers.Count)
@@ -63,15 +67,47 @@ namespace ResultsChecker
             {
                 numberOfCompares = groundTruthLicensePlateNumbers.Count;
             }
-            
 
+            return numberOfCompares;
+        }
+
+        public override void LoadResultsFromFile(string filenameWithPath)
+        {
+            this.licensePlateNumbers.Clear();
+
+            System.IO.FileStream fs = new System.IO.FileStream(filenameWithPath, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+            System.IO.StreamReader reader = new System.IO.StreamReader(fs);
+            string line = null;
+            while ((line = reader.ReadLine()) != null)
             {
+                string licensePlateNumber = line.TrimEnd('\r', '\n');
+                if (line != "")
+                {
+                    this.licensePlateNumbers.Add(licensePlateNumber.ToUpper());
+                }
+                else
+                {
+                    this.licensePlateNumbers.Add("XXXXXXX");
+                }
+            }
+        }
+
+        public override void CompareWithGroundTruth(StudentScore groundTruthData)
+        {
+            if (groundTruthData is StudentScore2015)
+            {
+                // downcasting to access the ground truth scenes
+                List<string> groundTruthLicensePlateNumbers = ((StudentScore2015)groundTruthData).licensePlateNumbers;
+
+                this.ClearAndPrepareAllFields(groundTruthLicensePlateNumbers.Count);
+
+                int numberOfCompares = this.FindNumberOfCompares(groundTruthLicensePlateNumbers);
                 for (int i = 0; i < numberOfCompares; i++)
-			    {
+                {
                     string current = this.licensePlateNumbers[i];
                     string gt = groundTruthLicensePlateNumbers[i];
 
-			        int sizeOfSmaller = 0;
+                    int sizeOfSmaller = 0;
                     if (current.Length < gt.Length)
                     {
                         sizeOfSmaller = current.Length;
@@ -83,7 +119,7 @@ namespace ResultsChecker
 
                     for (int j = 0; j < sizeOfSmaller; j++)
                     {
-                        if(current[j] == gt[j])
+                        if (current[j] == gt[j])
                         {
                             this.scoreForEachLicensePlate[i]++;
                         }
@@ -95,8 +131,21 @@ namespace ResultsChecker
                     }
 
                     score += this.scoreForEachLicensePlate[i];
-			    }
+                }
             }
+        }
+
+        public override StringBuilder GetResults()
+        {
+            StringBuilder sb = this.GetResultsGeneral();
+            sb.Append(", partial scores:, ");
+            foreach (var partialScore in this.scoreForEachLicensePlate)
+            {
+                sb.AppendFormat("{0:D}", partialScore).Append(", ");
+            }
+            sb.Append("\r\n");
+
+            return sb;
         }
     }
 }
