@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace ResultsChecker
 {
+    // the defualt value of numer of colors is 6 (for Jelly Beans)
+    // this can be used for LEGO too - but with 11 as number of colors (both colors and shapes are counted)
+
     class StudentScoreJellyBean : StudentScore
     {
         private class Scene
         {
-            public static int numberOfColors = 6;
+            public static int numberOfColors = 11;
             public int[] numberOfJellyBeans = new int[numberOfColors];
 
             public Scene()
@@ -71,7 +74,7 @@ namespace ResultsChecker
             this.scoreForEachScene.Clear();
             for (int i = 0; i < numberOfScenes; i++)
             {
-                this.scoreForEachScene.Add(0);
+                this.scoreForEachScene.Add(99.9);
             }
         }
 
@@ -124,10 +127,10 @@ namespace ResultsChecker
         public override StringBuilder GetResults()
         {
             StringBuilder sb = this.GetResultsGeneral();
-            sb.Append(", partial scores:, ");
+            sb.Append("; partial scores: ;");
             foreach (var partialScore in this.scoreForEachScene)
             {
-                sb.Append(partialScore).Append(", ");
+                sb.AppendFormat("{0:F3}", partialScore).Append("; ");
             }
             sb.Append("\r\n");
 

@@ -34,7 +34,7 @@ namespace ResultsChecker
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("Forename, Surname, score, other:, additional info (partial scores)");
+            sb.Append("Forename; Surname; score; other:; additional info (partial scores)");
             sb.Append("\r\n");
 
             return sb;
@@ -44,8 +44,8 @@ namespace ResultsChecker
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(this.forename).Append(", ").Append(this.surname).Append(", ");
-            sb.Append(this.score).Append(", ").Append(this.others);
+            sb.Append(this.forename).Append("; ").Append(this.surname).Append("; ");
+            sb.AppendFormat("{0:F3}", this.score).Append("; ").Append(this.others);
 
             return sb;
         }

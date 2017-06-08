@@ -11,26 +11,6 @@ namespace ResultsChecker
         private List<string> licensePlateNumbers;
         private List<double> scoreForEachLicensePlate;
         
-        public StudentScore2015()
-        {
-            this.forename = "John";
-            this.surname = "Doe";
-            this.score = 0;
-            this.scoreForEachLicensePlate = new List<int>();
-            this.licensePlateNumbers = new List<string>();
-            this.others = "";
-        }
-
-        public StudentScore2015(string _firstName, string _lastName)
-        {
-            this.forename = _firstName;
-            this.surname = _lastName;
-            this.score = 0;
-            this.scoreForEachLicensePlate = new List<int>();
-            this.licensePlateNumbers = new List<string>();
-            this.others = "";
-        }
-
         public StudentScore2015(string _firstName, string _lastName)
             : base(_firstName, _lastName)
         {

@@ -76,7 +76,7 @@ namespace ProgramsExecutor
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version(57);
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version_secondEdition(24);
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2016version(5, 60);
-            int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2016version(16, 10);
+            int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2016version(18, 10);
 
             Console.WriteLine("Time provided for each program (in seconds): " + (timeForWholeProjectInMSeconds / 1000).ToString() + System.Environment.NewLine);
 
