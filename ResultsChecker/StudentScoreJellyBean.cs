@@ -8,12 +8,13 @@ namespace ResultsChecker
 {
     // the defualt value of numer of colors is 6 (for Jelly Beans)
     // this can be used for LEGO too - but with 11 as number of colors (both colors and shapes are counted)
+    // this can be used for 2018 cars too - but with 7 as number of colors (all types of cars and pedestrians are counted)
 
     class StudentScoreJellyBean : StudentScore
     {
         private class Scene
         {
-            public static int numberOfColors = 11;
+            public static int numberOfColors = 7;
             public int[] numberOfJellyBeans = new int[numberOfColors];
 
             public Scene()
