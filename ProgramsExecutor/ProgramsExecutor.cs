@@ -61,10 +61,11 @@ namespace ProgramsExecutor
             return timeForWholeProjectInMSeconds;
         }
 
-        static int CalculateTimeForWholeProject_2018version(int _totalNumberOfSeconds)
+        static int CalculateTimeForWholeProject_2018version(int _totalNumberOfSeconds, int _framesPerSecond)
         {
             const int gracePeriod = 30;
-            int timeForWholeProjectInMSeconds = (_totalNumberOfSeconds + gracePeriod) * 1000;
+            const int milisecondsPerFrame = 100;
+            int timeForWholeProjectInMSeconds = (_totalNumberOfSeconds + gracePeriod) * _framesPerSecond * milisecondsPerFrame;
 
             return timeForWholeProjectInMSeconds;
         }
@@ -85,7 +86,7 @@ namespace ProgramsExecutor
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2015version_secondEdition(24);
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2016version(5, 60);
             //int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2016version(18, 10);
-            int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2016version(360, 10);
+            int timeForWholeProjectInMSeconds = CalculateTimeForWholeProject_2018version(582, 25);
 
             Console.WriteLine("Time provided for each program (in seconds): " + (timeForWholeProjectInMSeconds / 1000).ToString() + System.Environment.NewLine);
 
